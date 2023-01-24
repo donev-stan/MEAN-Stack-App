@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material/form-field';
 import { Post } from 'src/app/shared/models/post.model';
 import { PostsService } from 'src/app/shared/services/posts.service';
 
@@ -20,6 +19,6 @@ export class PostCreateComponent implements OnInit {
     const newPost: Post = form.value;
     this.postsService.addPost(newPost);
 
-    form.reset();
+    form.resetForm();
   }
 }
