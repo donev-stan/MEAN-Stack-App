@@ -1,3 +1,4 @@
-<p>
-  post-create works!
-</p>
+<textarea rows="6" [(ngModel)]="postInput"></textarea>
+<hr />
+<button (click)="onSavePost()">Save Post</button>
+<p>{{ newPost }}</p>
