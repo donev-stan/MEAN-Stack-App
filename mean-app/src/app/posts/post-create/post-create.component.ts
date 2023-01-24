@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { Post } from 'src/app/shared/models/post.model';
 
 @Component({
   selector: 'post-create',
@@ -6,14 +9,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./post-create.component.css'],
 })
 export class PostCreateComponent implements OnInit {
-  newPost = '';
-  postInput = '';
+  enteredTitle = '';
+  enteredContent = '';
 
   constructor() {}
 
   ngOnInit() {}
 
-  onSavePost() {
-    this.newPost = this.postInput;
+  onAddPost(form: NgForm) {
+    if (form.invalid) return;
+
+    const newPost: Post = form.value;
+
+    console.log(newPost);
   }
 }

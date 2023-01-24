@@ -8,8 +8,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [],
+  imports: [
+    CommonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatExpansionModule,
+  ],
   exports: [
     MatInputModule,
     MatFormFieldModule,
