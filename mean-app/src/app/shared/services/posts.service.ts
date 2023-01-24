@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Post } from '../models/post.model';
 
 @Injectable({
@@ -6,6 +7,7 @@ import { Post } from '../models/post.model';
 })
 export class PostsService {
   private posts: Post[] = [];
+  private postsUpdated = new Subject<Post[]>();
 
   constructor() {}
 
@@ -15,5 +17,10 @@ export class PostsService {
 
   addPost(newPost: Post) {
     this.posts.push(newPost);
+    this.postsUpdated.next(this.posts);
+  }
+
+  getPostUpdateListener() {
+    return this.postsUpdated.asObservable();
   }
 }
