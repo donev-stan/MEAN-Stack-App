@@ -1,13 +1,14 @@
-<mat-accordion multi>
-  <mat-expansion-panel>
+<mat-accordion multi *ngIf="posts">
+  <mat-expansion-panel *ngFor="let post of posts">
     <mat-expansion-panel-header>
-      <mat-panel-title> Title </mat-panel-title>
+      <mat-panel-title> {{ post.title }} </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="panel-content">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore alias
-      minus inventore ad adipisci tenetur explicabo aperiam odit quidem illum
-      maiores neque doloremque quisquam, a praesentium, nesciunt, recusandae
-      quod nisi!
+      {{ post.content }}
     </div>
   </mat-expansion-panel>
 </mat-accordion>
+
+<mat-card *ngIf="!posts.length" style="text-align: center">
+  <mat-card-content class="">No posts added yet!</mat-card-content>
+</mat-card>
