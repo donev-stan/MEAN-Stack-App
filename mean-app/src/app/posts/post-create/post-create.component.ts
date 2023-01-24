@@ -9,9 +9,6 @@ import { Post } from 'src/app/shared/models/post.model';
   styleUrls: ['./post-create.component.css'],
 })
 export class PostCreateComponent implements OnInit {
-  enteredTitle = '';
-  enteredContent = '';
-
   constructor() {}
 
   ngOnInit() {}
