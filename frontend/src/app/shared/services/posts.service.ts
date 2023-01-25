@@ -35,13 +35,17 @@ export class PostsService {
   }
 
   addPost(newPost: Post) {
-    this.http.post<{ message: string }>(this.url, newPost).subscribe({
-      next: (responseData) => {
-        console.log(responseData);
-        this.posts.push(newPost);
-        this.postsUpdated.next([...this.posts]);
-      },
-    });
+    this.http
+      .post<{ message: string; postId: string }>(this.url, newPost)
+      .subscribe({
+        next: (responseData) => {
+          console.log(responseData);
+          const postId = responseData.postId;
+          newPost.id = postId;
+          this.posts.push(newPost);
+          this.postsUpdated.next([...this.posts]);
+        },
+      });
   }
 
   getPostUpdateListener() {

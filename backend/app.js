@@ -33,11 +33,13 @@ app.post("/api/posts", (req, res, next) => {
   });
 
   console.log(post);
-  post.save();
+  post.save().then((result) => {
+    console.log(result);
 
-  res.status(201).json({
-    message: "Post created successfully!",
-    post,
+    res.status(201).json({
+      message: "Post created successfully!",
+      postId: result._id,
+    });
   });
 });
 
@@ -55,8 +57,6 @@ app.delete("/api/posts/:postId", (req, res, next) => {
   //   res.status(200).json({
   //     message: "Post deleted successfully!",
   //   });
-
-  console.log(req.params.postId);
 
   Post.deleteOne({ _id: req.params.postId }).then((result) => {
     console.log(result);
