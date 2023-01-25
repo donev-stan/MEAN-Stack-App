@@ -8,7 +8,9 @@
     </div>
     <mat-action-row>
       <button mat-flat-button color="primary">EDIT</button>
-      <button mat-flat-button color="warn">DELETE</button>
+      <button mat-flat-button color="warn" (click)="onDelete(post.id)">
+        DELETE
+      </button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

@@ -50,4 +50,20 @@ app.get("/api/posts", (req, res, next) => {
   });
 });
 
+app.delete("/api/posts/:postId", (req, res, next) => {
+  // Post.findByIdAndRemove(req.params.postId).then(() => {
+  //   res.status(200).json({
+  //     message: "Post deleted successfully!",
+  //   });
+
+  console.log(req.params.postId);
+
+  Post.deleteOne({ _id: req.params.postId }).then((result) => {
+    console.log(result);
+    res.status(200).json({
+      message: "Post deleted successfully!",
+    });
+  });
+});
+
 module.exports = app;

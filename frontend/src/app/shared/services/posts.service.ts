@@ -7,6 +7,8 @@ import { Post } from '../models/post.model';
   providedIn: 'root',
 })
 export class PostsService {
+  private url: string = 'http://localhost:3000/api/posts';
+
   private posts: Post[] = [];
   private postsUpdated = new Subject<Post[]>();
 
@@ -14,7 +16,7 @@ export class PostsService {
 
   getPosts() {
     this.http
-      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts')
+      .get<{ message: string; posts: any }>(this.url)
       .pipe(
         map((postData) =>
           postData.posts.map((post: any) => ({
@@ -33,18 +35,22 @@ export class PostsService {
   }
 
   addPost(newPost: Post) {
-    this.http
-      .post<{ message: string }>('http://localhost:3000/api/posts', newPost)
-      .subscribe({
-        next: (responseData) => {
-          console.log(responseData);
-          this.posts.push(newPost);
-          this.postsUpdated.next([...this.posts]);
-        },
-      });
+    this.http.post<{ message: string }>('this.url', newPost).subscribe({
+      next: (responseData) => {
+        console.log(responseData);
+        this.posts.push(newPost);
+        this.postsUpdated.next([...this.posts]);
+      },
+    });
   }
 
   getPostUpdateListener() {
     return this.postsUpdated.asObservable();
+  }
+
+  deletePost(postId: string) {
+    this.http
+      .delete(`${this.url}/${postId}`)
+      .subscribe(() => console.log('deleted'));
   }
 }
