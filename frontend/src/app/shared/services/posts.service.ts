@@ -35,7 +35,7 @@ export class PostsService {
   }
 
   addPost(newPost: Post) {
-    this.http.post<{ message: string }>('this.url', newPost).subscribe({
+    this.http.post<{ message: string }>(this.url, newPost).subscribe({
       next: (responseData) => {
         console.log(responseData);
         this.posts.push(newPost);
@@ -49,8 +49,12 @@ export class PostsService {
   }
 
   deletePost(postId: string) {
-    this.http
-      .delete(`${this.url}/${postId}`)
-      .subscribe(() => console.log('deleted'));
+    console.log(postId);
+
+    this.http.delete(`${this.url}/${postId}`).subscribe(() => {
+      const updatedPosts = this.posts.filter((post) => post.id !== postId);
+      this.posts = updatedPosts;
+      this.postsUpdated.next([...this.posts]);
+    });
   }
 }
