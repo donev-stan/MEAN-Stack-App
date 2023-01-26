@@ -88,5 +88,6 @@ export class PostCreateComponent implements OnInit {
     reader.readAsDataURL(file);
 
     console.log(file);
+    console.log(this.form);
   }
 }

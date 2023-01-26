@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
     let error = new Error("Invalid MIME Type");
     if (isValid) error = null;
 
-    callback(error, "backend/images");
+    callback(error, "images");
   },
   filename: (req, file, callback) => {
     const name = file.originalname.toLowerCase().split(" ").join("-");
@@ -60,7 +60,7 @@ router.get("/:postId", (req, res, next) => {
 });
 
 // Create Document
-router.post("", multer(storage).single("image"), (req, res, next) => {
+router.post("", multer({ storage: storage }).single("image"), (req, res, next) => {
   const newPost = new Post({
     title: req.body.title,
     content: req.body.content,

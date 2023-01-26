@@ -51,8 +51,13 @@ export class PostsService {
   }
 
   addPost(newPost: Post): void {
+    const postData = new FormData();
+    postData.append('title', newPost.title);
+    postData.append('content', newPost.content);
+    postData.append('image', newPost.image, newPost.title);
+
     this.http
-      .post<{ message: string; postId: string }>(this.url, newPost)
+      .post<{ message: string; postId: string }>(this.url, postData)
       .subscribe((response) => {
         console.log(response);
         this.router.navigate(['/list-post']);
