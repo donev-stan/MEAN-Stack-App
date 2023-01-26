@@ -10,7 +10,7 @@ import { PostsService } from 'src/app/shared/services/posts.service';
   styleUrls: ['./post-create.component.css'],
 })
 export class PostCreateComponent implements OnInit {
-  post: Post = { id: '', title: '', content: '' };
+  post: Post | undefined;
   private postId!: string;
   private editMode: boolean = false;
 
@@ -25,15 +25,7 @@ export class PostCreateComponent implements OnInit {
         this.editMode = true;
         this.postId = String(paramMap.get('postId'));
         this.postsService.getPost(this.postId).subscribe({
-          next: ({ message, post }) => {
-            this.post = {
-              id: post._id,
-              title: post.title,
-              content: post.content,
-            };
-
-            console.log(this.post);
-          },
+          next: (returnedPost) => (this.post = returnedPost),
         });
       } else {
         this.editMode = false;

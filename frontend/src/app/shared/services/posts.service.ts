@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, Subject } from 'rxjs';
-import { Post } from '../models/post.model';
+import { Post, PostBE } from '../models/post.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,12 +14,12 @@ export class PostsService {
 
   constructor(private http: HttpClient) {}
 
-  getPosts() {
+  getPosts(): void {
     this.http
-      .get<{ message: string; posts: any }>(this.url)
+      .get<{ message: string; posts: PostBE[] }>(this.url)
       .pipe(
-        map((postData) =>
-          postData.posts.map((post: any) => ({
+        map((response) =>
+          response.posts.map((post: PostBE) => ({
             id: post._id,
             title: post.title,
             content: post.content,
@@ -27,56 +27,56 @@ export class PostsService {
         )
       )
       .subscribe({
-        next: (transformedPosts: any) => {
+        next: (transformedPosts: Post[]) => {
           this.posts = transformedPosts;
           this.postsUpdated.next([...this.posts]);
         },
       });
   }
 
-  getPost(postId: string) {
-    // return { ...this.posts.find((post) => post.id === postId) } as Post;
-    return this.http.get<{
-      message: string;
-      post: { _id: string; title: string; content: string };
-    }>(`${this.url}/${postId}`);
+  getPost(postId: string): Observable<Post> {
+    return this.http
+      .get<{
+        message: string;
+        post: PostBE;
+      }>(`${this.url}/${postId}`)
+      .pipe(
+        map((response) => ({
+          id: response.post._id,
+          title: response.post.title,
+          content: response.post.content,
+        }))
+      );
   }
 
-  addPost(newPost: Post) {
+  addPost(newPost: Post): void {
     this.http
       .post<{ message: string; postId: string }>(this.url, newPost)
-      .subscribe({
-        next: (responseData) => {
-          console.log(responseData);
-          const postId = responseData.postId;
-          newPost.id = postId;
-          this.posts.push(newPost);
-          this.postsUpdated.next([...this.posts]);
-        },
-      });
+      .subscribe((response) => console.log(response));
   }
 
-  updatePost(post: Post) {
-    console.log(post);
-
-    this.http.put(`${this.url}/${post.id}`, post).subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-    });
+  updatePost(post: Post): void {
+    this.http
+      .put<{ message: string }>(`${this.url}/${post.id}`, post)
+      .subscribe((response) => console.log(response));
   }
 
-  getPostUpdateListener() {
+  getPostsUpdateListener(): Observable<Post[]> {
     return this.postsUpdated.asObservable();
   }
 
-  deletePost(postId: string) {
-    console.log(postId);
+  deletePost(postId: string): void {
+    this.http
+      .delete<{ message: string }>(`${this.url}/${postId}`)
+      .subscribe(() => {
+        // Locally update the list
+        const updatedPosts = this.posts.filter((post) => post.id !== postId);
+        this.posts = updatedPosts;
+        this.postsUpdated.next([...this.posts]);
 
-    this.http.delete(`${this.url}/${postId}`).subscribe(() => {
-      const updatedPosts = this.posts.filter((post) => post.id !== postId);
-      this.posts = updatedPosts;
-      this.postsUpdated.next([...this.posts]);
-    });
+        // Alternative:
+        // Fetch the updated list from the BE
+        // this.getPosts();
+      });
   }
 }
