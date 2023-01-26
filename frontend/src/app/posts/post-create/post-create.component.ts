@@ -24,7 +24,7 @@ export class PostCreateComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       title: new FormControl(null, {
-        validators: [Validators.required, Validators.maxLength(10)],
+        validators: [Validators.required, Validators.maxLength(50)],
       }),
       content: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(10)],

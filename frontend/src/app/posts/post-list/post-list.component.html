@@ -6,7 +6,10 @@
       <mat-panel-title> {{ post.title }} </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="panel-content">
-      {{ post.content }}
+      <img [src]="post.imagePath" [alt]="post.title" style="width: 100%" />
+      <p>
+        {{ post.content }}
+      </p>
     </div>
     <mat-action-row>
       <button
