@@ -52,7 +52,15 @@ export class PostsService {
       });
   }
 
-  updatePost() {}
+  updatePost(post: Post) {
+    console.log(post);
+
+    this.http.put(`${this.url}/${post.id}`, post).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+    });
+  }
 
   getPostUpdateListener() {
     return this.postsUpdated.asObservable();

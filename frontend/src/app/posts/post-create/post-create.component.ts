@@ -10,7 +10,8 @@ import { PostsService } from 'src/app/shared/services/posts.service';
   styleUrls: ['./post-create.component.css'],
 })
 export class PostCreateComponent implements OnInit {
-  post!: Post;
+  post: Post = { id: '', title: '', content: '' };
+  private postId!: string;
   private editMode: boolean = false;
 
   constructor(
@@ -22,20 +23,25 @@ export class PostCreateComponent implements OnInit {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.editMode = true;
-        const postId: string = String(paramMap.get('postId'));
-
-        this.post = this.postsService.getPost(postId);
+        this.postId = String(paramMap.get('postId'));
+        this.post = this.postsService.getPost(this.postId);
       } else {
         this.editMode = false;
       }
     });
   }
 
-  onAddPost(form: NgForm) {
+  onSavePost(form: NgForm) {
     if (form.invalid) return;
 
     const newPost: Post = form.value;
-    this.postsService.addPost(newPost);
+
+    if (this.editMode) {
+      newPost.id = this.postId;
+      this.postsService.updatePost(newPost);
+    } else {
+      this.postsService.addPost(newPost);
+    }
 
     form.resetForm();
   }
