@@ -42,6 +42,22 @@ app.post("/api/posts", (req, res, next) => {
   });
 });
 
+app.get("/api/posts/:postId", (req, res, next) => {
+  console.log(req.params.postId);
+  Post.findById(req.params.postId).then((post) => {
+    if (post) {
+      res.status(200).json({
+        message: "Post fetched successfully!",
+        post,
+      });
+    } else {
+      res.status(404).json({
+        message: "Post not found!",
+      });
+    }
+  });
+});
+
 app.get("/api/posts", (req, res, next) => {
   Post.find().then((documents) => {
     res.status(200).json({

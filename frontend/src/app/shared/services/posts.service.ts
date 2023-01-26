@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Subject } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { Post } from '../models/post.model';
 
 @Injectable({
@@ -34,8 +34,12 @@ export class PostsService {
       });
   }
 
-  getPost(postId: string): Post {
-    return { ...this.posts.find((post) => post.id === postId) } as Post;
+  getPost(postId: string) {
+    // return { ...this.posts.find((post) => post.id === postId) } as Post;
+    return this.http.get<{
+      message: string;
+      post: { _id: string; title: string; content: string };
+    }>(`${this.url}/${postId}`);
   }
 
   addPost(newPost: Post) {
