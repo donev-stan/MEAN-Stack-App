@@ -61,15 +61,23 @@ router.get("/:postId", (req, res, next) => {
 
 // Create Document
 router.post("", multer({ storage: storage }).single("image"), (req, res, next) => {
+  const url = `${req.protocol}://${req.get("host")}`;
+
   const newPost = new Post({
     title: req.body.title,
     content: req.body.content,
+    imagePath: `${url}/images/${req.file.filename}`,
   });
 
-  newPost.save().then((result) => {
+  newPost.save().then((createdPost) => {
     res.status(201).json({
       message: "Post created successfully!",
-      postId: result._id,
+      post: {
+        id: createdPost._id,
+        title: createdPost.title,
+        content: createdPost.content,
+        imagePath: createdPost.imagePath,
+      },
     });
   });
 });

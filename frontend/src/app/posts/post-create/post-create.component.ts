@@ -70,7 +70,7 @@ export class PostCreateComponent implements OnInit {
       formPost.id = this.postId;
       this.postsService.updatePost(formPost);
     } else {
-      this.postsService.addPost(formPost);
+      this.postsService.addPost(formPost, this.form.value.image);
     }
 
     this.form.reset();

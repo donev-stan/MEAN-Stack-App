@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, Observable, Subject } from 'rxjs';
+import { map, Observable, Subject, tap } from 'rxjs';
 import { Post, PostBE } from '../models/post.model';
 
 @Injectable({
@@ -24,8 +24,10 @@ export class PostsService {
             id: post._id,
             title: post.title,
             content: post.content,
+            imagePath: post.imagePath,
           }))
-        )
+        ),
+        tap((data) => console.log(data))
       )
       .subscribe({
         next: (transformedPosts: Post[]) => {
@@ -46,18 +48,19 @@ export class PostsService {
           id: response.post._id,
           title: response.post.title,
           content: response.post.content,
+          imagePath: response.post.imagePath,
         }))
       );
   }
 
-  addPost(newPost: Post): void {
+  addPost(newPost: Post, image: File): void {
     const postData = new FormData();
     postData.append('title', newPost.title);
     postData.append('content', newPost.content);
-    postData.append('image', newPost.image, newPost.title);
+    postData.append('image', image, newPost.title);
 
     this.http
-      .post<{ message: string; postId: string }>(this.url, postData)
+      .post<{ message: string; post: Post }>(this.url, postData)
       .subscribe((response) => {
         console.log(response);
         this.router.navigate(['/list-post']);
