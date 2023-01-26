@@ -7,12 +7,13 @@ import { PostsService } from 'src/app/shared/services/posts.service';
 @Component({
   selector: 'post-create',
   templateUrl: './post-create.component.html',
-  styleUrls: ['./post-create.component.css'],
+  styleUrls: ['./post-create.component.scss'],
 })
 export class PostCreateComponent implements OnInit {
   post: Post | undefined;
   private postId!: string;
   private editMode: boolean = false;
+  isLoading: boolean = true;
 
   constructor(
     private postsService: PostsService,
@@ -21,6 +22,8 @@ export class PostCreateComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      this.isLoading = false;
+
       if (paramMap.has('postId')) {
         this.editMode = true;
         this.postId = String(paramMap.get('postId'));
@@ -35,6 +38,8 @@ export class PostCreateComponent implements OnInit {
 
   onSavePost(form: NgForm) {
     if (form.invalid) return;
+
+    this.isLoading = true;
 
     const formPost: Post = form.value;
 
