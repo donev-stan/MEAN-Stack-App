@@ -2,7 +2,7 @@
 
 <mat-card *ngIf="!isLoading">
   <mat-card-content>
-    <form (submit)="onSavePost(postForm)" #postForm="ngForm">
+    <form [formGroup]="form" (submit)="onSavePost()">
       <div style="display: flex; gap: 20px; width: 100%">
         <!-- Title -->
         <mat-form-field>
@@ -10,12 +10,11 @@
             matInput
             type="text"
             placeholder="Title"
-            name="title"
-            [ngModel]="post?.title"
-            required
-            #title="ngModel"
+            formControlName="title"
           />
-          <mat-error *ngIf="title.invalid">Title is required!</mat-error>
+          <mat-error *ngIf="form.get('title')?.invalid"
+            >Title is required!</mat-error
+          >
         </mat-form-field>
 
         <button
@@ -35,13 +34,9 @@
           matInput
           rows="6"
           placeholder="Content"
-          name="content"
-          [ngModel]="post?.content"
-          required
-          minlength="10"
-          #content="ngModel"
+          formControlName="content"
         ></textarea>
-        <mat-error *ngIf="content.invalid"
+        <mat-error *ngIf="form.get('content')?.invalid"
           >Content must be at least 10 characters long!</mat-error
         >
       </mat-form-field>
@@ -50,7 +45,7 @@
         mat-raised-button
         color="accent"
         type="submit"
-        [disabled]="postForm.invalid"
+        [disabled]="form.invalid"
       >
         {{ editMode ? "Edit Post" : "Create Post" }}
       </button>

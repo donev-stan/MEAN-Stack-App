@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from 'src/app/shared/models/post.model';
 import { PostsService } from 'src/app/shared/services/posts.service';
@@ -15,10 +15,21 @@ export class PostCreateComponent implements OnInit {
   editMode: boolean = false;
   isLoading: boolean = true;
 
+  form: FormGroup;
+
   constructor(
     private postsService: PostsService,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.maxLength(10)],
+      }),
+      content: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(10)],
+      }),
+    });
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -28,7 +39,14 @@ export class PostCreateComponent implements OnInit {
         this.editMode = true;
         this.postId = String(paramMap.get('postId'));
         this.postsService.getPost(this.postId).subscribe({
-          next: (returnedPost) => (this.post = returnedPost),
+          next: (returnedPost) => {
+            this.post = returnedPost;
+
+            this.form.setValue({
+              title: this.post?.title,
+              content: this.post?.content,
+            });
+          },
         });
       } else {
         this.editMode = false;
@@ -36,12 +54,12 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
-  onSavePost(form: NgForm) {
-    if (form.invalid) return;
+  onSavePost() {
+    if (this.form.invalid) return;
 
     this.isLoading = true;
 
-    const formPost: Post = form.value;
+    const formPost: Post = this.form.value;
 
     if (this.editMode) {
       formPost.id = this.postId;
@@ -50,6 +68,6 @@ export class PostCreateComponent implements OnInit {
       this.postsService.addPost(formPost);
     }
 
-    form.resetForm();
+    this.form.reset();
   }
 }
