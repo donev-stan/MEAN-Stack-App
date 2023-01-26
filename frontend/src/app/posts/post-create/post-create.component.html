@@ -3,19 +3,31 @@
 <mat-card *ngIf="!isLoading">
   <mat-card-content>
     <form (submit)="onSavePost(postForm)" #postForm="ngForm">
-      <!-- Title -->
-      <mat-form-field>
-        <input
-          matInput
-          type="text"
-          placeholder="Title"
-          name="title"
-          [ngModel]="post?.title"
-          required
-          #title="ngModel"
-        />
-        <mat-error *ngIf="title.invalid">Title is required!</mat-error>
-      </mat-form-field>
+      <div style="display: flex; gap: 20px; width: 100%">
+        <!-- Title -->
+        <mat-form-field>
+          <input
+            matInput
+            type="text"
+            placeholder="Title"
+            name="title"
+            [ngModel]="post?.title"
+            required
+            #title="ngModel"
+          />
+          <mat-error *ngIf="title.invalid">Title is required!</mat-error>
+        </mat-form-field>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          (click)="filePicker.click()"
+        >
+          Add Image
+        </button>
+        <input type="file" #filePicker />
+      </div>
 
       <!-- Content -->
       <mat-form-field appearance="outline">
