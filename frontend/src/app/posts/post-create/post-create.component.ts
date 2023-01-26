@@ -12,7 +12,7 @@ import { PostsService } from 'src/app/shared/services/posts.service';
 export class PostCreateComponent implements OnInit {
   post: Post | undefined;
   private postId!: string;
-  private editMode: boolean = false;
+  editMode: boolean = false;
   isLoading: boolean = true;
 
   constructor(

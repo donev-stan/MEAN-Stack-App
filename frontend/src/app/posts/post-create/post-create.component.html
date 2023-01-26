@@ -40,7 +40,7 @@
         type="submit"
         [disabled]="postForm.invalid"
       >
-        Save Post
+        {{ editMode ? "Edit Post" : "Create Post" }}
       </button>
     </form>
   </mat-card-content>
