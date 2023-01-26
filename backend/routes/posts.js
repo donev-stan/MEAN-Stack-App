@@ -45,8 +45,6 @@ router.post("", (req, res, next) => {
   });
 
   newPost.save().then((result) => {
-    console.log(result);
-
     res.status(201).json({
       message: "Post created successfully!",
       postId: result._id,
