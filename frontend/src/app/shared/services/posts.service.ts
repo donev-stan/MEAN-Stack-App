@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { map, Observable, Subject } from 'rxjs';
 import { Post, PostBE } from '../models/post.model';
 
@@ -12,7 +13,7 @@ export class PostsService {
   private posts: Post[] = [];
   private postsUpdated = new Subject<Post[]>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getPosts(): void {
     this.http
@@ -52,13 +53,19 @@ export class PostsService {
   addPost(newPost: Post): void {
     this.http
       .post<{ message: string; postId: string }>(this.url, newPost)
-      .subscribe((response) => console.log(response));
+      .subscribe((response) => {
+        console.log(response);
+        this.router.navigate(['/list-post']);
+      });
   }
 
   updatePost(post: Post): void {
     this.http
       .put<{ message: string }>(`${this.url}/${post.id}`, post)
-      .subscribe((response) => console.log(response));
+      .subscribe((response) => {
+        console.log(response);
+        this.router.navigate(['/list-post']);
+      });
   }
 
   getPostsUpdateListener(): Observable<Post[]> {
