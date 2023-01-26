@@ -34,6 +34,10 @@ export class PostsService {
       });
   }
 
+  getPost(postId: string): Post {
+    return { ...this.posts.find((post) => post.id === postId) } as Post;
+  }
+
   addPost(newPost: Post) {
     this.http
       .post<{ message: string; postId: string }>(this.url, newPost)
@@ -47,6 +51,8 @@ export class PostsService {
         },
       });
   }
+
+  updatePost() {}
 
   getPostUpdateListener() {
     return this.postsUpdated.asObservable();

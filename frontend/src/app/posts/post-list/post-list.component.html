@@ -7,7 +7,13 @@
       {{ post.content }}
     </div>
     <mat-action-row>
-      <button mat-flat-button color="primary">EDIT</button>
+      <button
+        mat-flat-button
+        color="primary"
+        [routerLink]="['/edit-post', post.id]"
+      >
+        EDIT
+      </button>
       <button mat-flat-button color="warn" (click)="onDelete(post.id)">
         DELETE
       </button>
