@@ -6,10 +6,14 @@
       <mat-panel-title> {{ post.title }} </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="panel-content">
-      <img [src]="post.imagePath" [alt]="post.title" style="width: 100%" />
-      <p>
-        {{ post.content }}
-      </p>
+      <div class="img-box">
+        <img [src]="post.imagePath" [alt]="post.title" style="width: 100%" />
+      </div>
+      <div class="content-box">
+        <p>
+          {{ post.content }}
+        </p>
+      </div>
     </div>
     <mat-action-row>
       <button
@@ -17,9 +21,11 @@
         color="primary"
         [routerLink]="['/edit-post', post.id]"
       >
+        <mat-icon>edit</mat-icon>
         EDIT
       </button>
       <button mat-flat-button color="warn" (click)="onDelete(post.id)">
+        <mat-icon>delete_forever</mat-icon>
         DELETE
       </button>
     </mat-action-row>

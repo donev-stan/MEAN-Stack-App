@@ -1,3 +1,18 @@
 mat-spinner {
   margin: auto;
 }
+
+.panel-content {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  .img-box,
+  .content-box {
+    min-width: 300px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
