@@ -67,9 +67,26 @@ export class PostsService {
       });
   }
 
-  updatePost(post: Post): void {
+  updatePost(post: Post, image: File | string): void {
+    let postData: Post | FormData;
+
+    if (typeof image === 'object') {
+      postData = new FormData();
+      postData.append('id', post.id);
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('image', image, post.title);
+    } else {
+      postData = {
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        imagePath: image as string,
+      };
+    }
+
     this.http
-      .put<{ message: string }>(`${this.url}/${post.id}`, post)
+      .put<{ message: string }>(`${this.url}/${post.id}`, postData)
       .subscribe((response) => {
         console.log(response);
         this.router.navigate(['/list-post']);

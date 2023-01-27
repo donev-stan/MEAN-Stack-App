@@ -83,11 +83,14 @@ router.post("", multer({ storage: storage }).single("image"), (req, res, next) =
 });
 
 // Update Document
-router.put("/:postId", (req, res, next) => {
+router.put("/:postId", multer({ storage: storage }).single("image"), (req, res, next) => {
+  const url = `${req.protocol}://${req.get("host")}`;
+
   const updatedPost = new Post({
     _id: req.body.id,
     title: req.body.title,
     content: req.body.content,
+    imagePath: req.file ? `${url}/images/${req.file.filename}` : req.body.imagePath,
   });
 
   Post.updateOne({ _id: req.params.postId }, updatedPost).then((result) => {
