@@ -8,9 +8,13 @@ export const mimeType = (
   const fileReader = new FileReader();
 
   const fileReaderObservable = Observable.create(
-    (observer: Observer<{ [key: string]: any }>) => {
+    // (observer: Observer<{ [key: string]: any }>) => {
+    (observer: Observer<any>) => {
       fileReader.addEventListener('loadend', () => {
-        const array = new Uint8Array(fileReader.result as any).subarray(0, 4);
+        const array = new Uint8Array(fileReader.result as ArrayBuffer).subarray(
+          0,
+          4
+        );
 
         let header = '';
         for (let i = 0; i < array.length; i++) {
@@ -35,7 +39,8 @@ export const mimeType = (
         }
 
         if (isValid) {
-          observer.next({ null: null });
+          // observer.next({ null: null });
+          observer.next(null);
         } else {
           observer.next({ invalidMimeType: true });
         }
