@@ -35,3 +35,13 @@
 <mat-card *ngIf="!posts.length && !isLoading" style="text-align: center">
   <mat-card-content class=""><h3>No posts added yet!</h3></mat-card-content>
 </mat-card>
+
+<hr />
+
+<mat-paginator
+  [length]="totalPosts"
+  [pageSize]="postsPerPage"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onChangedPage($event)"
+>
+</mat-paginator>
