@@ -8,31 +8,37 @@ import { Post, PostBE } from '../models/post.model';
   providedIn: 'root',
 })
 export class PostsService {
-  private url: string = 'http://localhost:3000/api/posts';
+  private base_url: string = 'http://localhost:3000/api/posts';
 
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private postsUpdated = new Subject<{ posts: Post[]; postCount: number }>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getPosts(): void {
+  getPosts(postsPerPage: number, currentPage: number): void {
+    const queryParams: string = `?pageSize=${postsPerPage}&currentPage=${currentPage}`;
+    const url = this.base_url.concat(queryParams);
+
     this.http
-      .get<{ message: string; posts: PostBE[] }>(this.url)
+      .get<{ message: string; posts: PostBE[]; maxPosts: number }>(url)
       .pipe(
-        map((response) =>
-          response.posts.map((post: PostBE) => ({
+        map((response) => ({
+          count: response.maxPosts,
+          posts: response.posts.map((post: PostBE) => ({
             id: post._id,
             title: post.title,
             content: post.content,
             imagePath: post.imagePath,
-          }))
-        ),
-        tap((data) => console.log(data))
+          })),
+        }))
       )
       .subscribe({
-        next: (transformedPosts: Post[]) => {
-          this.posts = transformedPosts;
-          this.postsUpdated.next([...this.posts]);
+        next: (transformedData) => {
+          this.posts = transformedData.posts;
+          this.postsUpdated.next({
+            posts: [...transformedData.posts],
+            postCount: transformedData.count,
+          });
         },
       });
   }
@@ -42,7 +48,7 @@ export class PostsService {
       .get<{
         message: string;
         post: PostBE;
-      }>(`${this.url}/${postId}`)
+      }>(`${this.base_url}/${postId}`)
       .pipe(
         map((response) => ({
           id: response.post._id,
@@ -60,7 +66,7 @@ export class PostsService {
     postData.append('image', image, newPost.title);
 
     this.http
-      .post<{ message: string; post: Post }>(this.url, postData)
+      .post<{ message: string; post: Post }>(this.base_url, postData)
       .subscribe((response) => {
         console.log(response);
         this.router.navigate(['/list-post']);
@@ -86,29 +92,18 @@ export class PostsService {
     }
 
     this.http
-      .put<{ message: string }>(`${this.url}/${post.id}`, postData)
+      .put<{ message: string }>(`${this.base_url}/${post.id}`, postData)
       .subscribe((response) => {
         console.log(response);
         this.router.navigate(['/list-post']);
       });
   }
 
-  getPostsUpdateListener(): Observable<Post[]> {
+  getPostsUpdateListener(): Observable<{ posts: Post[]; postCount: number }> {
     return this.postsUpdated.asObservable();
   }
 
-  deletePost(postId: string): void {
-    this.http
-      .delete<{ message: string }>(`${this.url}/${postId}`)
-      .subscribe(() => {
-        // Locally update the list
-        const updatedPosts = this.posts.filter((post) => post.id !== postId);
-        this.posts = updatedPosts;
-        this.postsUpdated.next([...this.posts]);
-
-        // Alternative:
-        // Fetch the updated list from the BE
-        // this.getPosts();
-      });
+  deletePost(postId: string) {
+    return this.http.delete<{ message: string }>(`${this.base_url}/${postId}`);
   }
 }
