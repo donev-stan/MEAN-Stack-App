@@ -9,3 +9,15 @@ form {
     text-align: center;
   }
 }
+
+.signup-box {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+
+  .signup-link {
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+  }
+}
