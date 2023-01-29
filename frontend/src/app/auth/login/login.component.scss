@@ -1,0 +1,11 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /* align-items: center; */
+  justify-content: center;
+
+  .btn-box {
+    text-align: center;
+  }
+}
