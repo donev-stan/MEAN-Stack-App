@@ -2,24 +2,31 @@
   <span routerLink="/" style="cursor: pointer">Demo MEAN Stack App</span>
 
   <div class="links">
-    <button
-      mat-flat-button
-      [routerLink]="['/list-post']"
-      routerLinkActive="mat-accent"
-      color="primary"
-    >
-      <!-- <mat-icon>list</mat-icon>  -->
-      <!-- <mat-icon> list_alt</mat-icon> -->
-      <mat-icon> format_list_bulleted</mat-icon>
-      List Posts
-    </button>
-    <button
-      mat-flat-button
-      [routerLink]="['/create-post']"
-      routerLinkActive="mat-accent"
-      color="primary"
-    >
-      <mat-icon>library_add</mat-icon> New Post
+    <div class="main-links">
+      <button
+        mat-flat-button
+        [routerLink]="['/list-post']"
+        routerLinkActive="mat-accent"
+        color="primary"
+      >
+        <!-- <mat-icon>list</mat-icon>  -->
+        <!-- <mat-icon> list_alt</mat-icon> -->
+        <mat-icon> format_list_bulleted</mat-icon>
+        List Posts
+      </button>
+      <button
+        mat-flat-button
+        [routerLink]="['/create-post']"
+        routerLinkActive="mat-accent"
+        color="primary"
+      >
+        <mat-icon>library_add</mat-icon> New Post
+      </button>
+    </div>
+
+    <button mat-flat-button [routerLink]="['/login']" color="primary">
+      <mat-icon> person_pin</mat-icon>
+      Login
     </button>
   </div>
 </mat-toolbar>
