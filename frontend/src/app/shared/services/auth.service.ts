@@ -8,12 +8,12 @@ import { AuthData } from '../models/auth-data.model';
 })
 export class AuthService {
   private base_url: string = 'http://localhost:3000/api/user';
-  private token: string = '';
+  private token: string | null = '';
   private authStatusListener = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {}
 
-  getToken(): string {
+  getToken(): string | null {
     return this.token;
   }
 
@@ -38,5 +38,10 @@ export class AuthService {
       this.token = response.token;
       this.authStatusListener.next(true);
     });
+  }
+
+  logout() {
+    this.token = null;
+    this.authStatusListener.next(false);
   }
 }
