@@ -23,6 +23,20 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
+  autoAuthUser() {
+    const { token, expirationDate } = this.getAuthData()!;
+
+    if (!token || !expirationDate) return;
+
+    const expiresIn = expirationDate.getTime() - new Date().getTime();
+
+    if (expiresIn > 0) {
+      this.token = token;
+      this.setAuthTimer(expiresIn / 1000);
+      this.authStatusListener.next(true);
+    }
+  }
+
   signup(email: string, password: string) {
     const authData: AuthData = { email, password };
 
@@ -41,11 +55,12 @@ export class AuthService {
 
       if (this.token) {
         const expiresInDuration: number = response.expiresIn;
+        const expirationDate = new Date(
+          new Date().getTime() + expiresInDuration * 1000
+        );
 
-        this.tokenTimer = setTimeout(() => {
-          this.logout();
-        }, expiresInDuration * 1000);
-
+        this.setAuthTimer(expiresInDuration);
+        this.saveAuthData(this.token, expirationDate);
         this.authStatusListener.next(true);
         this.router.navigate(['/list-post']);
       }
@@ -57,5 +72,34 @@ export class AuthService {
     this.authStatusListener.next(false);
     this.router.navigate(['/login']);
     clearTimeout(this.tokenTimer);
+    this.clearAuthData();
+  }
+
+  private saveAuthData(token: string, expirationDate: Date) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('tokenExpirationDate', expirationDate.toISOString());
+  }
+
+  private clearAuthData() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpirationDate');
+  }
+
+  private getAuthData() {
+    const token = localStorage.getItem('token');
+    const expirationDate = localStorage.getItem('tokenExpirationDate');
+
+    if (!token || !expirationDate) return;
+
+    return {
+      token,
+      expirationDate: new Date(expirationDate),
+    };
+  }
+
+  private setAuthTimer(duration: number) {
+    this.tokenTimer = setTimeout(() => {
+      this.logout();
+    }, duration * 1000);
   }
 }
