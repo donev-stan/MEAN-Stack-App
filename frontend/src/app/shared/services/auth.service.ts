@@ -12,6 +12,7 @@ export class AuthService {
   private token: string | null = null;
   private authStatusListener = new BehaviorSubject<boolean>(false);
   private tokenTimer!: any;
+  private userId!: string | null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -23,8 +24,12 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
+  getUserId() {
+    return this.userId;
+  }
+
   autoAuthUser() {
-    const { token, expirationDate } = this.getAuthData()!;
+    const { token, expirationDate, userId } = this.getAuthData()!;
 
     if (!token || !expirationDate) return;
 
@@ -32,6 +37,7 @@ export class AuthService {
 
     if (expiresIn > 0) {
       this.token = token;
+      this.userId = userId;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusListener.next(true);
     }
@@ -50,50 +56,64 @@ export class AuthService {
 
     const url = this.base_url.concat('/login');
 
-    this.http.post(url, authData).subscribe((response: any) => {
-      this.token = response.token;
+    this.http
+      .post<{ token: string; expiresIn: number; userId: string }>(url, authData)
+      .subscribe((response) => {
+        this.token = response.token;
 
-      if (this.token) {
-        const expiresInDuration: number = response.expiresIn;
-        const expirationDate = new Date(
-          new Date().getTime() + expiresInDuration * 1000
-        );
+        if (this.token) {
+          const expiresInDuration: number = response.expiresIn;
+          const expirationDate = new Date(
+            new Date().getTime() + expiresInDuration * 1000
+          );
 
-        this.setAuthTimer(expiresInDuration);
-        this.saveAuthData(this.token, expirationDate);
-        this.authStatusListener.next(true);
-        this.router.navigate(['/list-post']);
-      }
-    });
+          this.userId = response.userId;
+          this.setAuthTimer(expiresInDuration);
+          this.saveAuthData(this.token, expirationDate, this.userId);
+          this.authStatusListener.next(true);
+          this.router.navigate(['/list-post']);
+        }
+      });
   }
 
   logout() {
     this.token = null;
+    this.userId = null;
     this.authStatusListener.next(false);
     this.router.navigate(['/login']);
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
   }
 
-  private saveAuthData(token: string, expirationDate: Date) {
+  private saveAuthData(token: string, expirationDate: Date, userId: string) {
     localStorage.setItem('token', token);
     localStorage.setItem('tokenExpirationDate', expirationDate.toISOString());
+
+    localStorage.setItem('userId', userId);
   }
 
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpirationDate');
+
+    localStorage.removeItem('userId');
   }
 
   private getAuthData() {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('tokenExpirationDate');
+    const userId = localStorage.getItem('userId');
 
-    if (!token || !expirationDate) return;
+    console.log(token);
+    console.log(expirationDate);
+    console.log(userId);
+
+    if (!token || !expirationDate || !userId) return;
 
     return {
       token,
       expirationDate: new Date(expirationDate),
+      userId,
     };
   }
 

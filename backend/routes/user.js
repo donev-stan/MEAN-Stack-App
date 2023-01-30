@@ -58,6 +58,7 @@ router.post("/login", (req, res, next) => {
         fetchedUser,
         token,
         expiresIn: 3600,
+        userId: fetchedUser._id,
       });
     })
     .catch((error) => {
