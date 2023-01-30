@@ -52,12 +52,13 @@ router.post("/login", (req, res, next) => {
 
       res.status(200).json({
         message: "User logged in successfully",
-        user: user,
+        user,
+        token,
       });
     })
     .catch((error) => {
       res.status(500).json({
-        error: error,
+        error,
       });
     });
 });
