@@ -15,7 +15,7 @@
         </p>
       </div>
     </div>
-    <mat-action-row *ngIf="userIsAuthenticated">
+    <mat-action-row *ngIf="userIsAuthenticated && userId == post.creatorId">
       <button
         mat-flat-button
         color="primary"

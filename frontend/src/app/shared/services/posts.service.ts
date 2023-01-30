@@ -76,6 +76,7 @@ export class PostsService {
         title: post.title,
         content: post.content,
         imagePath: image as string,
+        creatorId: null!,
       };
     }
 

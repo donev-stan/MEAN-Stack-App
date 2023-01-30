@@ -102,6 +102,7 @@ router.put("/:postId", checkAuth, multer({ storage: storage }).single("image"), 
     title: req.body.title,
     content: req.body.content,
     imagePath: req.file ? `${url}/images/${req.file.filename}` : req.body.imagePath,
+    creator: req.userData.userId,
   });
 
   Post.updateOne({ _id: req.params.postId, creator: req.userData.userId }, updatedPost).then((result) => {
