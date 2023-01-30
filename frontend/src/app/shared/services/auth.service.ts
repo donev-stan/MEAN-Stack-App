@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AuthData } from '../models/auth-data.model';
 
@@ -11,7 +12,7 @@ export class AuthService {
   private token: string | null = '';
   private authStatusListener = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getToken(): string | null {
     return this.token;
@@ -37,11 +38,13 @@ export class AuthService {
     this.http.post(url, authData).subscribe((response: any) => {
       this.token = response.token;
       this.authStatusListener.next(true);
+      this.router.navigate(['/list-post']);
     });
   }
 
   logout() {
     this.token = null;
     this.authStatusListener.next(false);
+    this.router.navigate(['/login']);
   }
 }

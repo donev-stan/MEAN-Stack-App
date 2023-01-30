@@ -35,7 +35,15 @@
       </mat-form-field>
 
       <div class="btn-box">
-        <button mat-raised-button color="accent" type="submit">Login</button>
+        <button
+          mat-raised-button
+          color="accent"
+          type="submit"
+          *ngIf="!isLoading"
+        >
+          Login
+        </button>
+        <mat-spinner *ngIf="isLoading" color="accent"></mat-spinner>
       </div>
     </form>
 
