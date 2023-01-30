@@ -9,8 +9,9 @@ import { AuthData } from '../models/auth-data.model';
 })
 export class AuthService {
   private base_url: string = 'http://localhost:3000/api/user';
-  private token: string | null = '';
+  private token: string | null = null;
   private authStatusListener = new BehaviorSubject<boolean>(false);
+  private tokenTimer!: any;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -37,8 +38,17 @@ export class AuthService {
 
     this.http.post(url, authData).subscribe((response: any) => {
       this.token = response.token;
-      this.authStatusListener.next(true);
-      this.router.navigate(['/list-post']);
+
+      if (this.token) {
+        const expiresInDuration: number = response.expiresIn;
+
+        this.tokenTimer = setTimeout(() => {
+          this.logout();
+        }, expiresInDuration * 1000);
+
+        this.authStatusListener.next(true);
+        this.router.navigate(['/list-post']);
+      }
     });
   }
 
@@ -46,5 +56,6 @@ export class AuthService {
     this.token = null;
     this.authStatusListener.next(false);
     this.router.navigate(['/login']);
+    clearTimeout(this.tokenTimer);
   }
 }
