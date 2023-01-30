@@ -1,8 +1,9 @@
 const express = require("express");
 const multer = require("multer");
-const storage = require("../config/multer");
 
 const Post = require("../models/post");
+const storage = require("../config/multer");
+const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
@@ -56,7 +57,7 @@ router.get("/:postId", (req, res, next) => {
 });
 
 // Create Document
-router.post("", multer({ storage: storage }).single("image"), (req, res, next) => {
+router.post("", checkAuth, multer({ storage: storage }).single("image"), (req, res, next) => {
   const url = `${req.protocol}://${req.get("host")}`;
 
   const newPost = new Post({
@@ -79,7 +80,7 @@ router.post("", multer({ storage: storage }).single("image"), (req, res, next) =
 });
 
 // Update Document
-router.put("/:postId", multer({ storage: storage }).single("image"), (req, res, next) => {
+router.put("/:postId", checkAuth, multer({ storage: storage }).single("image"), (req, res, next) => {
   const url = `${req.protocol}://${req.get("host")}`;
 
   const updatedPost = new Post({
@@ -98,7 +99,7 @@ router.put("/:postId", multer({ storage: storage }).single("image"), (req, res, 
 });
 
 // Delete Document
-router.delete("/:postId", (req, res, next) => {
+router.delete("/:postId", checkAuth, (req, res, next) => {
   Post.deleteOne({ _id: req.params.postId }).then((result) => {
     console.log(result);
     res.status(200).json({

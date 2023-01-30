@@ -15,7 +15,8 @@ mongoose
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use("/images", express.static(path.join("images")));
+// app.use("/images", express.static(path.join("images"))); // path.join() takes the root folder-a and adds whatever path you pass as an argument
+app.use("/images", express.static("images"));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
