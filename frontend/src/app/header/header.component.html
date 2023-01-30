@@ -24,9 +24,25 @@
       </button>
     </div>
 
-    <button mat-flat-button [routerLink]="['/login']" color="primary">
+    <button
+      mat-flat-button
+      [routerLink]="['/login']"
+      color="primary"
+      *ngIf="!userIsAuthenticated"
+    >
       <mat-icon> person_pin</mat-icon>
       Profile
+    </button>
+
+    <button
+      mat-flat-button
+      [routerLink]="['/logout']"
+      color="primary"
+      *ngIf="userIsAuthenticated"
+      (click)="onLogout()"
+    >
+      <mat-icon>exit_to_app</mat-icon>
+      Logout
     </button>
   </div>
 </mat-toolbar>

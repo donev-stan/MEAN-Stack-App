@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AuthData } from '../models/auth-data.model';
 
 @Injectable({
@@ -8,11 +9,16 @@ import { AuthData } from '../models/auth-data.model';
 export class AuthService {
   private base_url: string = 'http://localhost:3000/api/user';
   private token: string = '';
+  private authStatusListener = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {}
 
   getToken(): string {
     return this.token;
+  }
+
+  getAuthStatusListener(): Observable<boolean> {
+    return this.authStatusListener.asObservable();
   }
 
   signup(email: string, password: string) {
@@ -30,6 +36,7 @@ export class AuthService {
 
     this.http.post(url, authData).subscribe((response: any) => {
       this.token = response.token;
+      this.authStatusListener.next(true);
     });
   }
 }

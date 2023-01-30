@@ -15,7 +15,7 @@
         </p>
       </div>
     </div>
-    <mat-action-row>
+    <mat-action-row *ngIf="userIsAuthenticated">
       <button
         mat-flat-button
         color="primary"
