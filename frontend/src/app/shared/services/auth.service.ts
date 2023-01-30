@@ -17,4 +17,12 @@ export class AuthService {
 
     this.http.post(url, authData).subscribe(console.log);
   }
+
+  login(email: string, password: string) {
+    const authData: AuthData = { email, password };
+
+    const url = this.base_url.concat('/login');
+
+    this.http.post(url, authData).subscribe(console.log);
+  }
 }
