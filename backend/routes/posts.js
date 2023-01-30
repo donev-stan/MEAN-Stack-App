@@ -28,7 +28,13 @@ router.get("", (req, res, next) => {
     .then((count) => {
       res.status(200).json({
         message: "Posts fetched successfully!",
-        posts: fetchedPosts,
+        posts: fetchedPosts.map((post) => ({
+          id: post._id,
+          title: post.title,
+          content: post.content,
+          imagePath: post.imagePath,
+          creatorId: post.creator,
+        })),
         maxPosts: count,
       });
     })
@@ -46,7 +52,13 @@ router.get("/:postId", (req, res, next) => {
     if (post) {
       res.status(200).json({
         message: "Post fetched successfully!",
-        post,
+        post: {
+          id: post._id,
+          title: post.title,
+          content: post.content,
+          imagePath: post.imagePath,
+          creatorId: post.creator,
+        },
       });
     } else {
       res.status(404).json({
@@ -64,6 +76,7 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), (req, r
     title: req.body.title,
     content: req.body.content,
     imagePath: `${url}/images/${req.file.filename}`,
+    creator: req.userData.userId,
   });
 
   newPost.save().then((createdPost) => {
@@ -74,6 +87,7 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), (req, r
         title: createdPost.title,
         content: createdPost.content,
         imagePath: createdPost.imagePath,
+        creator: createdPost.creator,
       },
     });
   });

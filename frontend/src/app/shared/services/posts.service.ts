@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, Subject, tap } from 'rxjs';
-import { Post, PostBE } from '../models/post.model';
+import { Post } from '../models/post.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,16 +20,11 @@ export class PostsService {
     const url = this.base_url.concat(queryParams);
 
     this.http
-      .get<{ message: string; posts: PostBE[]; maxPosts: number }>(url)
+      .get<{ message: string; posts: Post[]; maxPosts: number }>(url)
       .pipe(
         map((response) => ({
           count: response.maxPosts,
-          posts: response.posts.map((post: PostBE) => ({
-            id: post._id,
-            title: post.title,
-            content: post.content,
-            imagePath: post.imagePath,
-          })),
+          posts: response.posts,
         }))
       )
       .subscribe({
@@ -47,16 +42,9 @@ export class PostsService {
     return this.http
       .get<{
         message: string;
-        post: PostBE;
+        post: Post;
       }>(`${this.base_url}/${postId}`)
-      .pipe(
-        map((response) => ({
-          id: response.post._id,
-          title: response.post.title,
-          content: response.post.content,
-          imagePath: response.post.imagePath,
-        }))
-      );
+      .pipe(map((response) => response.post));
   }
 
   addPost(newPost: Post, image: File): void {
