@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const postsRoutes = require("./routes/posts");
 const userRoutes = require("./routes/user");
@@ -12,6 +13,7 @@ mongoose
   .then(console.log("Connected to database!"))
   .catch((error) => console.log(error));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: "http://localhost:4200", credentials: true, preflightContinue: true }));

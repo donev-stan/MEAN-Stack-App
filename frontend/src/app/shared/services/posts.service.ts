@@ -54,7 +54,9 @@ export class PostsService {
     postData.append('image', image, newPost.title);
 
     this.http
-      .post<{ message: string; post: Post }>(this.base_url, postData)
+      .post<{ message: string; post: Post }>(this.base_url, postData, {
+        withCredentials: true,
+      })
       .subscribe((response) => {
         console.log(response);
         this.router.navigate(['/list-post']);
@@ -81,7 +83,9 @@ export class PostsService {
     }
 
     this.http
-      .put<{ message: string }>(`${this.base_url}/${post.id}`, postData)
+      .put<{ message: string }>(`${this.base_url}/${post.id}`, postData, {
+        withCredentials: true,
+      })
       .subscribe((response) => {
         console.log(response);
         this.router.navigate(['/list-post']);
@@ -93,6 +97,8 @@ export class PostsService {
   }
 
   deletePost(postId: string) {
-    return this.http.delete<{ message: string }>(`${this.base_url}/${postId}`);
+    return this.http.delete<{ message: string }>(`${this.base_url}/${postId}`, {
+      withCredentials: true,
+    });
   }
 }
