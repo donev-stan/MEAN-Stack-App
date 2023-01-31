@@ -8,7 +8,7 @@ interface DialogDataInterface {
 }
 
 @Component({
-  selector: 'app-error',
+  selector: 'error',
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.scss'],
 })
