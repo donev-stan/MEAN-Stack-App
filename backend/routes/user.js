@@ -3,10 +3,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
-const user = require("../models/user");
 
 const router = express.Router();
 
+// Sign up
 router.post("/signup", (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then((hashedPassword) => {
     const newUser = new User({
@@ -30,6 +30,7 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
+// Login
 router.post("/login", (req, res, next) => {
   let fetchedUser;
 
@@ -51,13 +52,14 @@ router.post("/login", (req, res, next) => {
         });
       }
 
-      const token = jwt.sign({ email: fetchedUser.email, userId: fetchedUser._id }, "secret-key-this-should-be-longer", { expiresIn: "3s" });
+      const token = jwt.sign({ email: fetchedUser.email, userId: fetchedUser._id }, "secret-key-this-should-be-longer", { expiresIn: "1h" });
       res.cookie("token", token, { httpOnly: true });
 
       res.status(200).json({
         message: "User logged in successfully",
         userId: fetchedUser._id,
-        expiresIn: 3600,
+        expiresIn: 3,
+        token,
       });
     })
     .catch((error) => {
@@ -67,10 +69,10 @@ router.post("/login", (req, res, next) => {
     });
 });
 
-router.get("/logout", (req, res, next) => {
-  console.log("Logged out successfully!");
+// Logout
+router.delete("/logout", (req, res, next) => {
   res.clearCookie("token");
-  res.status(200).json({ message: "Cookie cleared successfully!" });
+  res.status(200).json({ message: "Logged out successfully!" });
 });
 
 module.exports = router;

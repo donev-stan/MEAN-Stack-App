@@ -15,7 +15,6 @@ mongoose
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: "http://localhost:4200", credentials: true, preflightContinue: true }));
 app.use("/images", express.static("images"));
 
