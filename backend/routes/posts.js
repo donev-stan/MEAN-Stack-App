@@ -39,33 +39,38 @@ router.get("", (req, res, next) => {
       });
     })
     .catch((error) => {
-      console.log(error);
       res.status(500).json({
-        message: "Error fetching posts!",
+        message: "Fetching posts failed!",
       });
     });
 });
 
 // Single Documents
 router.get("/:postId", (req, res, next) => {
-  Post.findById(req.params.postId).then((post) => {
-    if (post) {
-      res.status(200).json({
-        message: "Post fetched successfully!",
-        post: {
-          id: post._id,
-          title: post.title,
-          content: post.content,
-          imagePath: post.imagePath,
-          creatorId: post.creator,
-        },
+  Post.findById(req.params.postId)
+    .then((post) => {
+      if (post) {
+        res.status(200).json({
+          message: "Post fetched successfully!",
+          post: {
+            id: post._id,
+            title: post.title,
+            content: post.content,
+            imagePath: post.imagePath,
+            creatorId: post.creator,
+          },
+        });
+      } else {
+        res.status(404).json({
+          message: "Post not found!",
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Fetching posts failed!",
       });
-    } else {
-      res.status(404).json({
-        message: "Post not found!",
-      });
-    }
-  });
+    });
 });
 
 // Create Document
@@ -80,16 +85,23 @@ router.post("", checkAuth, multer({ storage: storage }).single("image"), (req, r
   });
 
   newPost.save().then((createdPost) => {
-    res.status(201).json({
-      message: "Post created successfully!",
-      post: {
-        id: createdPost._id,
-        title: createdPost.title,
-        content: createdPost.content,
-        imagePath: createdPost.imagePath,
-        creator: createdPost.creator,
-      },
-    });
+    res
+      .status(201)
+      .json({
+        message: "Post created successfully!",
+        post: {
+          id: createdPost._id,
+          title: createdPost.title,
+          content: createdPost.content,
+          imagePath: createdPost.imagePath,
+          creator: createdPost.creator,
+        },
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: "Creating a post failed!",
+        });
+      });
   });
 });
 
@@ -105,32 +117,44 @@ router.put("/:postId", checkAuth, multer({ storage: storage }).single("image"), 
     creator: req.userData.userId,
   });
 
-  Post.updateOne({ _id: req.params.postId, creator: req.userData.userId }, updatedPost).then((result) => {
-    if (result.modifiedCount > 0) {
-      res.status(200).json({
-        message: "Post updated successfully!",
+  Post.updateOne({ _id: req.params.postId, creator: req.userData.userId }, updatedPost)
+    .then((result) => {
+      if (result.modifiedCount > 0) {
+        res.status(200).json({
+          message: "Post updated successfully!",
+        });
+      } else {
+        res.status(401).json({
+          message: "You are not authorized!",
+        });
+      }
+    })
+    .then((error) => {
+      res.status(500).json({
+        message: "Couldn't update post!",
       });
-    } else {
-      res.status(401).json({
-        message: "Not authorized!",
-      });
-    }
-  });
+    });
 });
 
 // Delete Document
 router.delete("/:postId", checkAuth, (req, res, next) => {
-  Post.deleteOne({ _id: req.params.postId, creator: req.userData.userId }).then((result) => {
-    if (result.deletedCount > 0) {
-      res.status(200).json({
-        message: "Post deleted successfully!",
+  Post.deleteOne({ _id: req.params.postId, creator: req.userData.userId })
+    .then((result) => {
+      if (result.deletedCount > 0) {
+        res.status(200).json({
+          message: "Post deleted successfully!",
+        });
+      } else {
+        res.status(401).json({
+          message: "You are not authorized!",
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Fetching posts failed!",
       });
-    } else {
-      res.status(401).json({
-        message: "Not authorized!",
-      });
-    }
-  });
+    });
 });
 
 module.exports = router;

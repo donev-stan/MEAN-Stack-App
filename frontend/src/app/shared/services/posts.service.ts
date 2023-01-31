@@ -92,13 +92,13 @@ export class PostsService {
       });
   }
 
-  getPostsUpdateListener(): Observable<{ posts: Post[]; postCount: number }> {
-    return this.postsUpdated.asObservable();
-  }
-
   deletePost(postId: string) {
     return this.http.delete<{ message: string }>(`${this.base_url}/${postId}`, {
       withCredentials: true,
     });
+  }
+
+  getPostsUpdateListener(): Observable<{ posts: Post[]; postCount: number }> {
+    return this.postsUpdated.asObservable();
   }
 }
