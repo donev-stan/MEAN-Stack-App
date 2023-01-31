@@ -20,3 +20,5 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authRequest);
   }
 }
+
+// This Interceptor is currently not needed because we are saving the auth token in a cookie and sending it with { withCredentials: true } setting
