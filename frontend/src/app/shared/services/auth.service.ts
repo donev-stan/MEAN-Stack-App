@@ -31,7 +31,7 @@ export class AuthService {
   autoAuthUser() {
     const { token, expirationDate, userId } = this.getAuthData()!;
 
-    if (!token || !expirationDate) return;
+    if (!token || !expirationDate || !userId) return;
 
     const expiresIn = expirationDate.getTime() - new Date().getTime();
 
@@ -57,19 +57,23 @@ export class AuthService {
     const url = this.base_url.concat('/login');
 
     this.http
-      .post<{ token: string; expiresIn: number; userId: string }>(url, authData)
+      .post<{ token: string; expiresIn: number; userId: string }>(
+        url,
+        authData,
+        { withCredentials: true }
+      )
       .subscribe((response) => {
         this.token = response.token;
 
         if (this.token) {
           const expiresInDuration: number = response.expiresIn;
-          const expirationDate = new Date(
-            new Date().getTime() + expiresInDuration * 1000
-          );
+          // const expirationDate = new Date(
+          //   new Date().getTime() + expiresInDuration * 1000
+          // );
 
           this.userId = response.userId;
           this.setAuthTimer(expiresInDuration);
-          this.saveAuthData(this.token, expirationDate, this.userId);
+          // this.saveAuthData(this.token, expirationDate, this.userId);
           this.authStatusListener.next(true);
           this.router.navigate(['/list-post']);
         }
@@ -88,7 +92,6 @@ export class AuthService {
   private saveAuthData(token: string, expirationDate: Date, userId: string) {
     localStorage.setItem('token', token);
     localStorage.setItem('tokenExpirationDate', expirationDate.toISOString());
-
     localStorage.setItem('userId', userId);
   }
 
@@ -104,11 +107,12 @@ export class AuthService {
     const expirationDate = localStorage.getItem('tokenExpirationDate');
     const userId = localStorage.getItem('userId');
 
-    console.log(token);
-    console.log(expirationDate);
-    console.log(userId);
-
-    if (!token || !expirationDate || !userId) return;
+    if (!token || !expirationDate || !userId)
+      return {
+        token: undefined,
+        expirationDate: undefined,
+        userId: undefined,
+      };
 
     return {
       token,

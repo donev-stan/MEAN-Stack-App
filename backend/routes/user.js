@@ -52,13 +52,14 @@ router.post("/login", (req, res, next) => {
       }
 
       const token = jwt.sign({ email: fetchedUser.email, userId: fetchedUser._id }, "secret-key-this-should-be-longer", { expiresIn: "1h" });
+      res.cookie("token", token, { httpOnly: true });
 
       res.status(200).json({
         message: "User logged in successfully",
         fetchedUser,
+        userId: fetchedUser._id,
         token,
         expiresIn: 3600,
-        userId: fetchedUser._id,
       });
     })
     .catch((error) => {
