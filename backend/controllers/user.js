@@ -33,42 +33,38 @@ exports.signup = async (req, res, next) => {
   }
 };
 
-exports.login = (req, res, next) => {
-  let fetchedUser;
-
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (!user) {
-        return res.status(401).json({
-          message: "User not found!",
-        });
-      }
-
-      fetchedUser = user;
-      return bcrypt.compare(req.body.password, user.password);
-    })
-    .then((result) => {
-      if (!result) {
-        return res.status(401).json({
-          message: "Invalid authentication credentials!",
-        });
-      }
-
-      const token = jwt.sign({ email: fetchedUser.email, userId: fetchedUser._id }, "secret-key-this-should-be-longer", { expiresIn: "1h" });
-      res.cookie("token", token, { httpOnly: true });
-
-      res.status(200).json({
-        message: "User logged in successfully",
-        userId: fetchedUser._id,
-        expiresIn: 3600,
-        token,
+exports.login = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found!",
       });
-    })
-    .catch((error) => {
-      res.status(500).json({
+    }
+
+    const validCredentials = await bcrypt.compare(req.body.password, user.password);
+
+    if (!validCredentials) {
+      return res.status(401).json({
         message: "Invalid authentication credentials!",
       });
+    }
+
+    const token = jwt.sign({ email: user.email, userId: user._id }, "secret-key-this-should-be-longer", { expiresIn: "1h" });
+    res.cookie("token", token, { httpOnly: true });
+
+    res.status(200).json({
+      message: "User logged in successfully",
+      userId: user._id,
+      expiresIn: 3600,
+      token,
     });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error!",
+    });
+  }
 };
 
 exports.logout = (req, res, next) => {
