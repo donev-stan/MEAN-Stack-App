@@ -24,7 +24,7 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
-  getUserId() {
+  getUserId(): string | null {
     return this.userId;
   }
 
@@ -48,7 +48,7 @@ export class AuthService {
   signup(email: string, password: string) {
     const authData: AuthData = { email, password };
     const url = this.base_url.concat('/signup');
-    return this.http
+    this.http
       .post<{
         message: string;
         token: string;
@@ -87,6 +87,18 @@ export class AuthService {
       });
   }
 
+  logout() {
+    const url = this.base_url.concat('/logout');
+    this.http
+      .delete<{ message: string }>(url, { withCredentials: true })
+      .subscribe({
+        next: ({ message }) => {
+          console.log(message);
+          this.clearCredentials();
+        },
+      });
+  }
+
   private setCredentials(token: string, expiresIn: number, userId: string) {
     if (!token) return;
 
@@ -102,22 +114,13 @@ export class AuthService {
     this.router.navigate(['/list-post']);
   }
 
-  logout() {
-    const url = this.base_url.concat('/logout');
-    this.http
-      .delete<{ message: string }>(url, { withCredentials: true })
-      .subscribe({
-        next: (response) => {
-          console.log(response.message);
-
-          this.token = null;
-          this.userId = null;
-          this.authStatusListener.next(false);
-          this.clearAuthData();
-          clearTimeout(this.tokenTimer);
-          this.router.navigate(['/login']);
-        },
-      });
+  private clearCredentials() {
+    this.token = null;
+    this.userId = null;
+    this.authStatusListener.next(false);
+    this.clearAuthData();
+    clearTimeout(this.tokenTimer);
+    this.router.navigate(['/login']);
   }
 
   private saveAuthData(token: string, expirationDate: Date, userId: string) {
