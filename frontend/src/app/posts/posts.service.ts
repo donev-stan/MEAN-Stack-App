@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, Observable, Subject, tap } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Post } from './post.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostsService {
-  private base_url: string = 'http://localhost:3000/api/posts';
+  private base_url: string = `${environment.apiUrl}/posts`;
 
   private posts: Post[] = [];
   private postsUpdated = new Subject<{ posts: Post[]; postCount: number }>();
@@ -59,7 +60,7 @@ export class PostsService {
       })
       .subscribe((response) => {
         console.log(response);
-        this.router.navigate(['/post/list']);
+        this.router.navigate(['/posts']);
       });
   }
 

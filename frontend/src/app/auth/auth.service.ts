@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AuthData } from './auth-data.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private base_url: string = 'http://localhost:3000/api/user';
+  private base_url: string = `${environment.apiUrl}/user`;
   private token: string | null = null;
   private authStatusListener = new BehaviorSubject<boolean>(false);
   private tokenTimer!: any;
