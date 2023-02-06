@@ -105,7 +105,6 @@ exports.updatePost = async (req, res, next) => {
 
   try {
     const result = await Post.updateOne({ _id: req.params.postId, creator: req.userData.userId }, updatedPost);
-    console.log(result);
 
     if (result.modifiedCount > 0) {
       res.status(200).json({

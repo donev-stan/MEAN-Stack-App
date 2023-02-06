@@ -15,7 +15,7 @@ exports.signup = async (req, res, next) => {
     const createdUser = await newUser.save();
 
     if (createdUser) {
-      const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, "secret-key-this-should-be-longer", { expiresIn: "1h" });
+      const token = jwt.sign({ email: createdUser.email, userId: createdUser._id }, process.env.JWT_KEY, { expiresIn: "1h" });
       res.cookie("token", token, { httpOnly: true });
 
       res.status(200).json({
@@ -50,7 +50,7 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const token = jwt.sign({ email: user.email, userId: user._id }, "secret-key-this-should-be-longer", { expiresIn: "1h" });
+    const token = jwt.sign({ email: user.email, userId: user._id }, process.env.JWT_KEY, { expiresIn: "1h" });
     res.cookie("token", token, { httpOnly: true });
 
     res.status(200).json({
