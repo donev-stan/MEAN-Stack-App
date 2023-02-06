@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './shared/material/material.module';
 import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AuthInterceptor } from './shared/interceptors/auth-interceptor';
+import { AuthInterceptor } from './auth/auth-interceptor';
 import { ErrorInterceptor } from './shared/interceptors/error-interceptor';
 import { ErrorComponent } from './error/error.component';
 import { PostModule } from './posts/post.module';

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
 import { Post } from 'src/app/shared/models/post.model';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { AuthService } from 'src/app/auth/auth.service';
 import { PostsService } from 'src/app/shared/services/posts.service';
 
 @Component({
@@ -61,13 +61,11 @@ export class PostListComponent implements OnInit, OnDestroy {
   onDelete(postId: string) {
     this.isLoading = true;
 
-    this.postsService
-      .deletePost(postId)
-      .subscribe({
-        next: () =>
-          this.postsService.getPosts(this.postsPerPage, this.currentPage),
-        error: () => (this.isLoading = false),
-      });
+    this.postsService.deletePost(postId).subscribe({
+      next: () =>
+        this.postsService.getPosts(this.postsPerPage, this.currentPage),
+      error: () => (this.isLoading = false),
+    });
   }
 
   onChangedPage(pageData: PageEvent) {
