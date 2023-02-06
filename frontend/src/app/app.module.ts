@@ -7,10 +7,9 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './shared/material/material.module';
 import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AuthInterceptor } from './auth/auth-interceptor';
 import { ErrorInterceptor } from './shared/interceptors/error-interceptor';
 import { ErrorComponent } from './error/error.component';
-import { PostModule } from './posts/post.module';
+import { AuthInterceptor } from './auth/auth-interceptor';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, ErrorComponent],
@@ -20,7 +19,6 @@ import { PostModule } from './posts/post.module';
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
-    PostModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

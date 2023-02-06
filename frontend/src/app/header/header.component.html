@@ -5,8 +5,9 @@
     <div class="main-links">
       <button
         mat-flat-button
-        [routerLink]="['/list-post']"
+        [routerLink]="['/posts']"
         routerLinkActive="mat-accent"
+        [routerLinkActiveOptions]="{ exact: true }"
         color="primary"
       >
         <!-- <mat-icon>list</mat-icon>  -->
@@ -16,7 +17,7 @@
       </button>
       <button
         mat-flat-button
-        [routerLink]="['/create-post']"
+        [routerLink]="['/posts/create']"
         routerLinkActive="mat-accent"
         color="primary"
       >

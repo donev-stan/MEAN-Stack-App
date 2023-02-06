@@ -59,7 +59,7 @@ export class PostsService {
       })
       .subscribe((response) => {
         console.log(response);
-        this.router.navigate(['/list-post']);
+        this.router.navigate(['/post/list']);
       });
   }
 
@@ -88,7 +88,7 @@ export class PostsService {
       })
       .subscribe((response) => {
         console.log(response);
-        this.router.navigate(['/list-post']);
+        this.router.navigate(['/posts']);
       });
   }
 
