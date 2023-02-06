@@ -111,7 +111,7 @@ export class AuthService {
     this.saveAuthData(this.token, expirationDate, this.userId);
 
     this.authStatusListener.next(true);
-    this.router.navigate(['/list-post']);
+    this.router.navigate(['/posts']);
   }
 
   private clearCredentials() {
