@@ -26,7 +26,7 @@
 
     <button
       mat-flat-button
-      [routerLink]="['/login']"
+      [routerLink]="['/auth/login']"
       color="primary"
       *ngIf="!userIsAuthenticated"
     >
@@ -37,7 +37,6 @@
 
     <button
       mat-flat-button
-      [routerLink]="['/logout']"
       color="primary"
       *ngIf="userIsAuthenticated"
       (click)="onLogout()"

@@ -120,7 +120,7 @@ export class AuthService {
     this.authStatusListener.next(false);
     this.clearAuthData();
     clearTimeout(this.tokenTimer);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 
   private saveAuthData(token: string, expirationDate: Date, userId: string) {
