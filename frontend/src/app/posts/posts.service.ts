@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, Subject, tap } from 'rxjs';
-import { Post } from '../models/post.model';
+import { Post } from './post.model';
 
 @Injectable({
   providedIn: 'root',
